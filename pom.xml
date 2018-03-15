@@ -263,7 +263,7 @@ under the License.
                   <id>integration-test</id>
                   <configuration>
                     <environmentVariables>
-                      <JENKINS_MAVEN_AGENT_DISABLED>true</JENKINS_MAVEN_AGENT_DISABLED>
+                      <JENKINS_MAVEN_AGENT_DISABLED>false</JENKINS_MAVEN_AGENT_DISABLED>
                     </environmentVariables>
                     <debug>true</debug>
                     <projectsDirectory>src/it</projectsDirectory>
