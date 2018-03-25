@@ -264,6 +264,8 @@ under the License.
                   <configuration>
                     <environmentVariables>
                       <JENKINS_MAVEN_AGENT_DISABLED>false</JENKINS_MAVEN_AGENT_DISABLED>
+					  <!-- explicit innocent value -->
+					  <JAVA_TOOL_OPTIONS>-XX:-HeapDumpOnOutOfMemoryError</JAVA_TOOL_OPTIONS>
                     </environmentVariables>
                     <debug>true</debug>
                     <projectsDirectory>src/it</projectsDirectory>
