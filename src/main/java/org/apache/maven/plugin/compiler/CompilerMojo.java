@@ -114,9 +114,15 @@ public class CompilerMojo
 
     @Parameter( defaultValue = "${project.compileClasspathElements}", readonly = true, required = true )
     private List<String> compilePath;
-    
+
+    /**
+     * When set to {@code true}, the classes will be placed in <code>META-INF/versions/${release}</code>
+     * The release value must be set, otherwise the plugin will fail. 
+     * 
+     * @since 3.7.1
+     */
     @Parameter
-    private boolean allowPartialRequirements;
+    private boolean multiReleaseOutput;
 
     @Component
     private LocationManager locationManager;
@@ -153,7 +159,16 @@ public class CompilerMojo
     
     protected File getOutputDirectory()
     {
-        return outputDirectory;
+        File dir;
+        if ( !multiReleaseOutput )
+        {
+            dir = outputDirectory;
+        }
+        else
+        {
+            dir = new File( outputDirectory, "META-INF/versions/" + release );
+        }
+        return dir;
     }
 
     public void execute()
@@ -163,6 +178,11 @@ public class CompilerMojo
         {
             getLog().info( "Not compiling main sources" );
             return;
+        }
+        
+        if ( multiReleaseOutput && release == null )
+        {
+            throw new MojoExecutionException( "When using 'multiReleaseOutput' the release must be set" );
         }
 
         super.execute();
