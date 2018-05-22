@@ -109,6 +109,8 @@ META-INF/MANIFEST.MF { Multi-Release: true }
 
   * Developers should not change their way of work / simple configuration
   
+  []
+  
   The only solution to cover the first two bullets was by split the code into a Maven multimodule project. Now every Maven module is just a standard Maven project with close to no specific adjustments in the pom. 
   The downside it that a hierarchical structure is required even though the result is just 1 artifact.
   
@@ -119,6 +121,8 @@ META-INF/MANIFEST.MF { Multi-Release: true }
   * Do not require the project to switch to a multi-module format
 
   * Developers should not change their way of work / simple configuration
+  
+  []
 
   The first requirements implies that the project now are separate Maven projects. One Maven project contains the base-code and in the end this will also be the multirelease jar. 
    When building such project for the first time, you'll need to call Maven at least 3 times: first the base needs to be compiled, next all version specific projects must be built and finally the main project needs to be built again, now including the version specific classes extracted from their jars.
@@ -133,6 +137,8 @@ Single project
   * Do not require the project to switch to a multi-module format
   
   * Only one Maven call to compile and package the Multi Release jar
+  
+  []
 
 * {{{http://in.relation.to/2017/02/13/building-multi-release-jars-with-maven/}Single Project}}
 
@@ -156,21 +162,26 @@ Single project
 
   @todo make examples for every setup with for the same sources
 
-*-----------------------------*-----------------------*-------------------------*-----------------*--------------------------------*
-||                            || Maven Multimodule    || Multi Project          || Single project || Maven extension+plugin        ||
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| # projects                  | 1                     | 1 + #javaVersions       | 1               | 1                              |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| # builds to package         | 1                     | 2 + #javaVersions       | 1               | 1                              |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| # builds/project to test    | 1                     | 1                       | #javaVersions   | #javaVersions (?)              |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| Maven multimodule           | Yes                   | No                      | No              | No                             |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| IDE support (1)             | Yes                   | Yes                     | No              | No                             |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
-| Additional plugins          | maven-assembly-plugin | maven-dependency-plugin |                 | multi-release-jar-maven-plugin |
-*-----------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+*-------------------------------*-----------------------*-------------------------*-----------------*--------------------------------*
+||                              || Maven Multimodule    || Multi Project          || Single project || Maven extension+plugin        ||
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| # projects                    | 1                     | 1 + #javaVersions       | 1               | 1                              |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| # builds to package           | 1                     | 2 + #javaVersions       | 1               | 1                              |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| # builds/project to test      | 1                     | 1                       | #javaVersions   | #javaVersions (?)              |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| Simple Maven Project Layout   | No                    | Yes                     | Yes             | Yes                            |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| Additional POM adjustments(a) | 1 (b)                 | #javaVersions(c)        | #javaVersions(d)| #javaVersions(e)               |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
+| IDE support (f)               | Yes                   | Yes                     | No              | No                             |
+*-------------------------------+-----------------------+-------------------------+-----------------+--------------------------------+
 
-  (1) IDE Support: All classes are recognized and can be tested within the IDE.
- 
+  (a) Additional POM adjustments: # of executions added to the default lifecycle. This reflects the complexity of the POM.
+  (b) Maven multimodule uses maven-assembly-plugin to assemble to multirelease jar
+  (c) Multi project uses the maven-dependency-plugin to unpack java specific dependency to its matching outputDirectory
+  (d) 
+  (e) Maven extension+plugin hides the multiple executions in the <<<perReleaseConfiguration>>> configuration
+  (f) IDE Support: All classes are recognized and can be tested within the IDE.
+  
